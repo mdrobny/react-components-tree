@@ -3,6 +3,7 @@ var path = require('path');
 
 var config = {
     context: path.join(__dirname, 'tree-renderer'),
+    watch: true,
     entry: './src/app.js',
     output: {
         path: path.join(__dirname, 'tree-renderer', 'public', 'js'),

@@ -1,0 +1,21 @@
+{
+  "fileName": "app",
+  "displayName": "VGLive",
+  "children": [
+    {
+      "fileName": "top-bar",
+      "displayName": "TopBar",
+      "children": []
+    },{
+      "fileName": "event-coverage",
+      "displayName": "EventCoverage",
+      "children": [
+        {
+          "fileName": "media",
+          "displayName": "Media",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

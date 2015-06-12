@@ -7,7 +7,6 @@ var path = require('path');
 app.use(express['static'](path.join(__dirname, 'tree-renderer', 'public')));
 
 app.get('/', function(req, res) {
-    //res.sendFile(path.join(__dirname, 'tree-renderer', 'public', 'index.html'));
     res.sendFile('index.html');
 });
 
