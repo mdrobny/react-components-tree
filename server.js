@@ -4,10 +4,11 @@ var express = require('express');
 var app = express();
 var path = require('path');
 
-app.use(express['static'](path.join(__dirname, 'public')));
+app.use(express['static'](path.join(__dirname, 'tree-renderer', 'public')));
 
-app.get("/", function(req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/', function(req, res) {
+    //res.sendFile(path.join(__dirname, 'tree-renderer', 'public', 'index.html'));
+    res.sendFile('index.html');
 });
 
 var server = app.listen(8081, function() {
