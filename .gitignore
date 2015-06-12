@@ -28,3 +28,5 @@ node_modules
 
 # JetBrains IDE
 .idea
+
+config/config.js
