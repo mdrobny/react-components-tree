@@ -14,6 +14,11 @@
           "fileName": "media",
           "displayName": "Media",
           "children": []
+        },
+        {
+          "fileName": "asdf",
+          "displayName": "asdf",
+          "children": []
         }
       ]
     }

@@ -26,6 +26,7 @@
     "eslint": "^0.22.1",
     "eslint-plugin-react": "^2.5.0",
     "gulp": "^3.9.0",
+    "gulp-less": "^3.0.3",
     "gulp-livereload": "^3.8.0",
     "gulp-webpack": "^1.5.0",
     "jsx-loader": "^0.13.2",

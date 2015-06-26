@@ -15,7 +15,9 @@ var Tree = React.createClass({
                 <h1>React components tree</h1>
                 <Node displayName={this.props.rootNode.displayName}
                       fileName={this.props.rootNode.fileName}
-                      childNodes={this.props.rootNode.children} />
+                      childNodes={this.props.rootNode.children}
+                      tab="---"
+                />
             </div>
         );
     }
