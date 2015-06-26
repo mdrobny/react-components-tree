@@ -30,5 +30,5 @@ node_modules
 .idea
 
 # Built Javascript and styles
-public/js
-public/css
+tree-renderer/public/js
+tree-renderer/public/css
