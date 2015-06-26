@@ -28,3 +28,7 @@ node_modules
 
 # JetBrains IDE
 .idea
+
+# Built Javascript and styles
+public/js
+public/css
