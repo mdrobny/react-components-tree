@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/mdrobny/react-components-tree#readme",
   "dependencies": {
+    "async": "^1.2.1",
     "react": "^0.13.3"
   },
   "devDependencies": {
