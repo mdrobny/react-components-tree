@@ -8,31 +8,36 @@ var readline = require('readline');
 
 var async = require('async');
 
-function DiscoverComponents(options) {
+var config = {
+    requirePathRegex: /require\('(.*?)'\)/,
+    displayNameRegex: /displayName: '([\w]+)'/,
+    storeRegex: /[\w]*createStore\(\{/
+};
+
+function TraverseProjectFiles(options) {
     EventEmitter.call(this);
 
     this.symlinkPath = options.symlinkPath;
-
-    this.requirePathRegex = /require\('(.*?)'\)/;
-    this.displayNameRegex = /displayName: '([\w]+)'/;
+    this.symlinkName = options.symlinkName;
 
     var rootComponent = {
-        name: 'App',
         id: 1,
         parentId: 0,
         path: options.reactRootComponentPath
     };
-    this.componentIndex = 1;
-    this.getChildrenComponents(rootComponent, function() {
-        console.log('route app done');
 
-        this.getComponentsArray(rootComponent);
+    this.componentIndex = 1;
+
+    // Start discovering components
+    this.getChildrenFiles(rootComponent, function() {
+
+        this.emit('discoverFinished', rootComponent);
     }.bind(this));
 }
 
-util.inherits(DiscoverComponents, EventEmitter);
+util.inherits(TraverseProjectFiles, EventEmitter);
 
-DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
+TraverseProjectFiles.prototype.getChildrenFiles = function(component, done) {
     // Array of children components
     var children = [],
         name, type;
@@ -47,19 +52,23 @@ DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
 
     // Parse file line by line
     rl.on('line', function(line) {
-        var requirePathMatch = this.requirePathRegex.exec(line),
-            displayNameMatch = this.displayNameRegex.exec(line),
+        var requirePathMatch, displayNameMatch, storeMatch,
             path, pathStart,
-            symlinkDep = false, localDep = false;
+            symlinkDep = false, localDep = false,
+            fileExists;
+
+        requirePathMatch = config.requirePathRegex.exec(line);
+        displayNameMatch = config.displayNameRegex.exec(line);
+        storeMatch = config.storeRegex.exec(line);
 
         // If line contains require('file') add this file as children
         if (requirePathMatch) {
             // get 'path' from require('path')
             path = requirePathMatch[1];
-            // pathStart: 'symlink', '.', '..'
+            // possible pathStarts: ['symlink', '.', '..']
             pathStart = path.split('/')[0];
 
-            if (pathStart === 'app') {
+            if (pathStart === this.symlinkName) {
                 symlinkDep = true;
             } else if (pathStart === '.' || pathStart === '..') {
                 localDep = true;
@@ -71,12 +80,13 @@ DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
                 path = pathModule.parse(component.path).dir + '/' + path;
             }
 
-
             if (symlinkDep || localDep) {
                 path = path.replace(/\//g, pathModule.sep);
 
-                fs.exists(path + '.js', function(exists) {
-                    if (!exists) {
+                try {
+                    // Check if file exists
+                    fileExists = fs.openSync(path + '.js', 'r');
+                    if (!fileExists) {
                         // If path.js does not exists use index.js from directory 'path'
                         path += '/index';
                     }
@@ -84,12 +94,11 @@ DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
                     path += '.js';
 
                     children.push({
-                        name: '',
-                        id: this.componentIndex++,
+                        id: ++this.componentIndex,
                         parentId: component.id,
                         path: path
                     });
-                }.bind(this));
+                } catch (e) {}
             }
         }
 
@@ -98,24 +107,29 @@ DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
             type = 'component';
         }
 
+        if (storeMatch) {
+            type = 'store';
+        }
     }.bind(this));
 
     // After 'end' event array of children components is complete
-    // Call getChildrenComponents for each child
+    // Call getChildrenComponents for each child using async to keep track when they end
     readStream.on('end', function() {
         var functionsArray;
         rl.close();
 
         component.children = children;
-        component.name = name;
+        component.displayName = name;
         component.type = type;
+        delete component.path;
 
-        if (children.length) {
+        // Discover more components
+        if (component.type === 'component' && children.length) {
             functionsArray = [];
 
             children.forEach(function(child) {
                 functionsArray.push(function(callback) {
-                    this.getChildrenComponents(child, callback);
+                    this.getChildrenFiles(child, callback);
                 }.bind(this));
             }.bind(this));
 
@@ -129,23 +143,4 @@ DiscoverComponents.prototype.getChildrenComponents = function(component, done) {
     }.bind(this));
 };
 
-DiscoverComponents.prototype.getComponentsArray = function(treeRoot) {
-    var componentsArray = [],
-        pushComponentsToArray = function(treeNode) {
-            if (treeNode.type === 'component') {
-                componentsArray.push(treeNode);
-                if (treeNode.children) {
-                    treeNode.children.forEach(function(child) {
-                        pushComponentsToArray(child);
-                    });
-                }
-                delete treeNode.children;
-            }
-
-        };
-    pushComponentsToArray(treeRoot);
-
-    return componentsArray;
-};
-
-module.exports = DiscoverComponents;
+module.exports = TraverseProjectFiles;

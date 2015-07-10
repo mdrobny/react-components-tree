@@ -4,9 +4,9 @@ var gulp = require('gulp');
 
 var nodemon = require('gulp-nodemon');
 
-gulp.task('crawlerApp', function() {
+gulp.task('traverseProjectFiles', function() {
     var options = {
-        script: 'tree-crawler/index.js',
+        script: 'tree-discover/index.js',
         ext: 'js',
         ignore: ['node_modules/']
     };
