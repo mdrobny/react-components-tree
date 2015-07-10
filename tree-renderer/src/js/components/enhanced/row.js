@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Node = require('./node');
+var NodeWrapper = require('./node-wrapper');
 
 var Row = React.createClass({
     displayName: 'Row',
@@ -11,17 +11,17 @@ var Row = React.createClass({
     },
 
     renderChildNodes: function() {
-        return this.props.nodeList.map(function(item) {
-            return <Node displayName={item.displayName} fileName={item.fileName} key={item.fileName}/>;
-        });
+        if (this.props.nodeList.length) {
+            return this.props.nodeList.map(function(item, i) {
+                return <NodeWrapper data={item} key={i}/>;
+            });
+        }
     },
 
     render: function() {
         return (
-            <div>
-                <div className="component-row">
-                    {this.renderChildNodes()}
-                </div>
+            <div className="component-row">
+                {this.renderChildNodes()}
             </div>
         );
     }

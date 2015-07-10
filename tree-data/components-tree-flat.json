@@ -3,24 +3,29 @@
     "id": 1,
     "fileName": "app",
     "displayName": "VGLive",
-    "parentId": 0
+    "parentId": 0,
+    "children": [2,3]
   },
   {
     "id": 2,
     "fileName": "top-bar",
     "displayName": "TopBar",
-    "parentId": 1
+    "parentId": 1,
+    "children": []
+    "children": []
   },
   {
     "id": 3,
     "fileName": "event-coverage",
     "displayName": "EventCoverage",
-    "parentId": 1
+    "parentId": 1,
+    "children": [4]
   },
   {
     "id": 4,
     "fileName": "media",
     "displayName": "Media",
-    "parentId": 3
+    "parentId": 3,
+    "children": []
   }
 ]

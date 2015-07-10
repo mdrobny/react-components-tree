@@ -6,7 +6,7 @@ var Node = React.createClass({
     displayName: 'Node',
     propTypes: {
         // when no children put empty table
-        fileName: React.PropTypes.string.isRequired,
+        fileName: React.PropTypes.string,
         displayName: React.PropTypes.string.isRequired
     },
 
@@ -15,7 +15,6 @@ var Node = React.createClass({
             <div>
                 <div className="node component-box">
                     <p>{this.props.displayName}</p>
-                    <p>({this.props.fileName + '.js'})</p>
                 </div>
             </div>
         );

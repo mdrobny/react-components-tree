@@ -1,2 +1,5 @@
-/node_modules
+node_modules
+
 server.js
+
+tree-renderer/public/js/bundle.js
